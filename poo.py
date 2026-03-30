@@ -1,12 +1,44 @@
 # Classe parent - ce qui est commun a tous les billets
 class Billet:
+    # Compteur partage par TOUS les billets
+    nombre_billets_crees = 0
 
-    def __init__(self, nom, numero, categorie, prix):
-        self.numero = numero
+    def __init__(self, nom, categorie, prix):
+        Billet.nombre_billets_crees += 1
+        self.numero = Billet.nombre_billets_crees
         self.proprietaire = nom
         self.categorie = categorie
         self.prix = prix
         self.valide = True
+
+    # @classmethod - connait la classe, pas l'objet
+    @classmethod
+    def creer_vip(cls, nom):
+        return cls(nom, "VIP", 25000)
+    
+    @classmethod
+    def creer_standard(cls, nom):
+        return cls(nom, "Standard", 5000)
+    
+    # @staticmethod - utilitaire pur, pas besion de self ni cls
+    @staticmethod
+    def categorie_valide(categorie):
+        categories = ["VIP", "Premium", "Standard", "Early Bird"]
+        return categorie in categories
+    
+    # @propety - attribut calcule, appele sans parentheses
+    @property
+    def status(self):
+        if self.valide:
+            return "Valide"
+        return "invalide"
+    
+    @property
+    def prix_avec_frais(self):
+        return self.prix * 1.05 # 5% de frais de service
+    
+    def __str__(self):
+        return f"Billet FEST-{self.numero:04d} - {self.proprietaire} - {self.categorie} - {self.status}"
 
     def afficher(self):
         print(f"""
@@ -21,14 +53,26 @@ class Billet:
         self.valide = False
         print(f"Billet FEST-{self.numero:04d} invalide")
 
-    def __str__(self):
-        return f"Billet FEST-{self.numero:04d} - {self.proprietaire} - {self.categorie}"
+    """ def __str__(self):
+        return f"Billet FEST-{self.numero:04d} - {self.proprietaire} - {self.categorie}" """
     
     def __repr__(self):
         return f"Billet(numero={self.numero}, proprietaire='{self.proprietaire}')"
     
     def __len__(self):
         return self.prix
+    
+
+# Test
+billet1 = Billet.creer_vip("Pierre")    # @classmethod
+billet2 = Billet.creer_standard("Jean") # @classmethod
+billet3 = Billet("Alice", "Premium", 15000)
+
+print(billet1)
+print(billet2)
+print(billet3)
+
+print(f"\nBillet crees :")
             
 # Classe enfant - herite de tout Billet + ajoute ses propres attributs
 class BilletVIP(Billet):
@@ -50,7 +94,7 @@ class BilletStandard(Billet):
         super().__init__(nom, numero, "Standard", prix)
         self.acces_backstage = False
 
-# Test
+""" # Test
 billet_vip = BilletVIP("Pierre", 1, 25000)
 billet_std = BilletStandard("Jean", 2, 5000)
 
@@ -69,7 +113,7 @@ print(repr(billet1))    # utilise __repr__
 print(len(billet1))     # utilise __len__
 
 billet1.afficher()
-billet2.afficher()
+billet2.afficher() """
 
 class Evenement:
 
@@ -94,10 +138,10 @@ class Evenement:
     def places_restantes(self):
         return self.capacite_max - len(self.billets)
     
-festival = Evenement("FestiYaoundé 2026", "Palais des Sports", 3)
+""" festival = Evenement("FestiYaoundé 2026", "Palais des Sports", 3)
 festival.ajouter_billet(billet1)
 festival.ajouter_billet(billet2)
 festival.ajouter_billet(billet2)
 festival.ajouter_billet(billet2)
 festival.afficher_billets()
-print(f"Places restantes : {festival.places_restantes()}")
+print(f"Places restantes : {festival.places_restantes()}") """
